@@ -1,0 +1,5 @@
+Hopefully a simple library to compare 2 URIs in C.
+
+Todo:
+    - Add in checking Path, Query, Fragment
+    - Add ability to handle hex representations
