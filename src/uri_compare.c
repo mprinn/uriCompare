@@ -1,9 +1,9 @@
-
-
 #include "uri_compare.h"
 
+const char colon = ':';
+const char slash = '/';
 
-bool charEq(char c1, char c2, bool caseInsensitive)
+static bool charEq(char c1, char c2, bool caseInsensitive)
 {
     if (c1 == c2)
         return true;
@@ -22,10 +22,8 @@ bool charEq(char c1, char c2, bool caseInsensitive)
     return false;
 }
 
-const char colon = ':';
-const char slash = '/';
 
-bool compareScheme(char *uri1, char *uri2, size_t *schemeLen)
+static bool compareScheme(char *uri1, char *uri2, size_t *schemeLen)
 {
     size_t sLen1 = 0, sLen2 = 0;
     char *tmp;
@@ -58,7 +56,7 @@ bool compareScheme(char *uri1, char *uri2, size_t *schemeLen)
     return true;
 }
 
-bool comparePorts(char *uri1, char *uri2)
+static bool comparePorts(char *uri1, char *uri2)
 {
     int port1 = 80;
     int port2 = 80;
@@ -74,7 +72,7 @@ bool comparePorts(char *uri1, char *uri2)
     return true;
 }
 
-bool compareAuthority(char *uri1, char *uri2, size_t *authLen)
+static bool compareAuthority(char *uri1, char *uri2, size_t *authLen)
 {
     size_t len1 = 0, len2 = 0;
     bool ret = false;
