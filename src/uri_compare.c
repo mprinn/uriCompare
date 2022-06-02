@@ -131,12 +131,43 @@ fail:
     return ret;
 }
 
+static char convertHex(char *in)
+{
+    return (char)strtol(in, NULL, 16);
+}
+
+static void escapeHex(char **in)
+{
+    
+    size_t len = strlen(*in);
+    char hex[2], *str;
+    str = *in;
+    for (int i = 0; i < len; ++i)
+    {
+        if (str[i] == '%')
+        {
+            memcpy(hex, &str[i + 1], 2);
+
+            str[i] = convertHex(hex);
+            
+            for (int j = i + 1; j < len - 1; ++j)
+            {
+                str[j] = str[j + 2];
+            }
+            len -= 2;
+        }
+    }
+}
+
 bool compareURIs(char *uri1, char *uri2)
 {
     size_t compLen = 0;
     size_t compLen2 = 0;
     
     
+    escapeHex(&uri1);
+    escapeHex(&uri2);
+
     if (!compareScheme(uri1, uri2, &compLen))
     {
         return false;
