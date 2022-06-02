@@ -72,7 +72,7 @@ static bool comparePorts(char *uri1, char *uri2)
     return true;
 }
 
-static bool compareAuthority(char *uri1, char *uri2, size_t *authLen)
+static bool compareAuthority(char *uri1, char *uri2, size_t *authLen1, size_t *authLen2)
 {
     size_t len1 = 0, len2 = 0;
     bool ret = false;
@@ -96,7 +96,8 @@ static bool compareAuthority(char *uri1, char *uri2, size_t *authLen)
         goto fail;
     }
     
-
+    *authLen1 = len1;
+    *authLen2 = len2;
     tmp = memchr(uri1, colon, strlen(uri1));
     if (tmp)
     {
@@ -120,7 +121,7 @@ static bool compareAuthority(char *uri1, char *uri2, size_t *authLen)
            goto fail;
         }
     }
-    *authLen = len1;
+
 
 
     ret = true;
@@ -133,6 +134,7 @@ fail:
 bool compareURIs(char *uri1, char *uri2)
 {
     size_t compLen = 0;
+    size_t compLen2 = 0;
     
     
     if (!compareScheme(uri1, uri2, &compLen))
@@ -150,13 +152,26 @@ bool compareURIs(char *uri1, char *uri2)
     uri2 +=2;
     // check for host / port
     // //foo:80
-    if (!compareAuthority(uri1, uri2, &compLen))
+    if (!compareAuthority(uri1, uri2, &compLen, &compLen2))
     {
         return false;
     }
 
-    
-    
+    uri1 += compLen;
+    uri2 += compLen2;
+
     // case sensitive check rest 
+    compLen = strlen(uri1);
+    compLen2 = strlen(uri1);
+
+    if (compLen != compLen2)
+        return false;
+    for (int i = 0; i < compLen; ++i)
+    {
+        if (!charEq(uri1[i], uri2[i], false))
+        {
+           return false;
+        }
+    }
     return true;
 }
